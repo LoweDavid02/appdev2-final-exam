@@ -8,6 +8,7 @@ export default defineSchema({
     userId: v.id("users")
   }),
   users: defineTable({
+    fullname: v.string(),
     username: v.string(),
     password: v.string(),
   })
