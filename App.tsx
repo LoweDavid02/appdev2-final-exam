@@ -1,47 +1,32 @@
 import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TodoScreen from "./screens/TodoScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
-import { useState } from "react";
-
-import { Id } from "./convex/_generated/dataModel";
+import { RootStackParamList } from "./types/navigation";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
 
-type Screen = 'login' | 'signup' | 'todo';
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const [userId, setUserId] = useState<Id<"users"> | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<Screen>('login');
-
-  const handleLogin = (id: Id<"users">) => {
-    setUserId(id);
-    setCurrentScreen('todo');
-  };
-
-  const handleSignupSuccess = () => {
-    setCurrentScreen('login');
-  };
-
-  const navigateToSignup = () => {
-    setCurrentScreen('signup');
-  };
-
-  const navigateToLogin = () => {
-    setCurrentScreen('login');
-  };
-
   return (
     <ConvexProvider client={convex}>
-      {currentScreen === 'todo' && userId ? (
-        <TodoScreen userId={userId} />
-      ) : currentScreen === 'signup' ? (
-        <SignupScreen onSignupSuccess={handleSignupSuccess} />
-      ) : (
-        <LoginScreen onLogin={handleLogin} onNavigateToSignup={navigateToSignup} />
-      )}
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="Todo" component={TodoScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </ConvexProvider>
   );
 }

@@ -9,48 +9,47 @@ import {
     Alert,
 } from "react-native";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { Id } from "../convex/_generated/dataModel";
+import { RootStackParamList } from "../types/navigation";
 
-interface LoginProps {
-    onLogin: (id: Id<"users">) => void;
-    onNavigateToSignup: () => void;
-}
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
-const LoginScreen = ({ onLogin, onNavigateToSignup } : LoginProps) => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+const LoginScreen = () => {
+    const navigation = useNavigation<LoginScreenNavigationProp>();
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
-    const loginMutation = useMutation(api.users.login)
+    const loginMutation = useMutation(api.users.login);
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "Please enter username and password!")
+            Alert.alert("Error", "Please enter username and password!");
+            return;
         }
 
         try {
             const result = await loginMutation({
                 username: email,
                 password
-            })
+            });
 
             if (result.success && result.userId) {
-
-                onLogin(result.userId)
-
-                setEmail('')
-                setPassword('')
+                navigation.navigate("Todo", { userId: result.userId });
+                setEmail('');
+                setPassword('');
             } else {
-                Alert.alert("Login Failed", result.message)
+                Alert.alert("Login Failed", result.message);
             }
 
         } catch (error) {
-            Alert.alert("Error", "Unexpected error happen. Please try again!")
-            console.log(error)
+            Alert.alert("Error", "Unexpected error happen. Please try again!");
+            console.log(error);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -112,7 +111,7 @@ const LoginScreen = ({ onLogin, onNavigateToSignup } : LoginProps) => {
 
                 <View style={styles.footer}>
                     <Text>Don't have an account? </Text>
-                    <TouchableOpacity onPress={onNavigateToSignup}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
                         <Text style={styles.linkText}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>

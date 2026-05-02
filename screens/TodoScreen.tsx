@@ -11,14 +11,21 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import { useRoute, RouteProp } from "@react-navigation/native";
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
+import { RootStackParamList } from "../types/navigation";
 
-const TodoScreen = ({ userId }: {userId: Id<"users">}) => {
-    const [task, setTask] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
+type TodoScreenRouteProp = RouteProp<RootStackParamList, "Todo">;
+
+const TodoScreen = () => {
+    const route = useRoute<TodoScreenRouteProp>();
+    const { userId } = route.params;
+    
+    const [task, setTask] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     const todoList = useQuery(api.todos.get, { userId });
     const addTodo = useMutation(api.todos.add);

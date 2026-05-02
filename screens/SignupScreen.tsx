@@ -10,15 +10,17 @@ import {
     ActivityIndicator,
 } from "react-native";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { RootStackParamList } from "../types/navigation";
 
-interface SignupProps {
-    onSignupSuccess: () => void;
-}
+type SignupScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Signup">;
 
-const SignupScreen = ({ onSignupSuccess }: SignupProps) => {
+const SignupScreen = () => {
+    const navigation = useNavigation<SignupScreenNavigationProp>();
     const [fullName, setFullName] = useState<string>('');
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -67,7 +69,7 @@ const SignupScreen = ({ onSignupSuccess }: SignupProps) => {
                                 setFullName('');
                                 setUsername('');
                                 setPassword('');
-                                onSignupSuccess();
+                                navigation.navigate("Login");
                             }
                         }
                     ]);
@@ -80,7 +82,7 @@ const SignupScreen = ({ onSignupSuccess }: SignupProps) => {
                             setFullName('');
                             setUsername('');
                             setPassword('');
-                            onSignupSuccess();
+                            navigation.navigate("Login");
                         }
                     }
                 ]);
@@ -164,7 +166,7 @@ const SignupScreen = ({ onSignupSuccess }: SignupProps) => {
 
                 <View style={styles.footer}>
                     <Text>Already have an account? </Text>
-                    <TouchableOpacity onPress={onSignupSuccess} disabled={isLoading}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")} disabled={isLoading}>
                         <Text style={styles.linkText}>Log In</Text>
                     </TouchableOpacity>
                 </View>
