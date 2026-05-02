@@ -15,10 +15,11 @@ import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 
 interface LoginProps {
-    onLogin: (id: Id<"users">) => void
+    onLogin: (id: Id<"users">) => void;
+    onNavigateToSignup: () => void;
 }
 
-const LoginScreen = ({ onLogin } : LoginProps) => {
+const LoginScreen = ({ onLogin, onNavigateToSignup } : LoginProps) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -111,7 +112,7 @@ const LoginScreen = ({ onLogin } : LoginProps) => {
 
                 <View style={styles.footer}>
                     <Text>Don't have an account? </Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={onNavigateToSignup}>
                         <Text style={styles.linkText}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
